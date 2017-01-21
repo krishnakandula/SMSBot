@@ -31,4 +31,11 @@ public class Contact {
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("[").append(getName()+ "|").append(getPhoneNumber()).append("]");
+        return builder.toString();
+    }
 }
