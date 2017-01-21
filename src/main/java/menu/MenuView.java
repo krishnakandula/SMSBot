@@ -1,12 +1,9 @@
 package menu;
 
-import com.sun.istack.internal.NotNull;
 import com.twilio.Twilio;
 import com.twilio.rest.api.v2010.account.Message;
 import com.twilio.type.PhoneNumber;
 import config.Config;
-import data.BaseRepository;
-import data.ContactRepository;
 import data.models.Contact;
 
 import java.util.List;
@@ -19,22 +16,10 @@ public class MenuView implements MenuContract.View{
     public static Scanner inputScanner;
     private MenuContract.Presenter presenter;
 
-    public MenuView(MenuContract.Presenter presenter){
-        this.presenter = presenter;
-    }
-
     public void onCreate(){
+        presenter = new MenuPresenter(this);
         inputScanner = new Scanner(System.in);
-    }
-
-    private static void initializeTwilio(){
-        Twilio.init(Config.TWILIO_ACCOUNT_SID, Config.TWILIO_AUTH_TOKEN);
-
-        PhoneNumber fromPhoneNumber = new PhoneNumber(Config.TWILIO_FROM_PHONE_NUMBER);
-        PhoneNumber toPhoneNumber = new PhoneNumber(Config.MY_PHONE_NUMBER);
-        Message message = Message.creator(toPhoneNumber, fromPhoneNumber, "Hi there")
-                .create();
-        System.out.println(message.getSid());
+        showMainMenu();
     }
 
     public void showMainMenu(){
@@ -43,60 +28,40 @@ public class MenuView implements MenuContract.View{
         System.out.println("2. ------ADD CONTACT------");
         System.out.println("3. ---------EXIT----------");
 
-        //Get user input
         int userInput = inputScanner.nextInt();
-
-        switch (userInput){
-            case 1: showContactList();
-                break;
-            case 2: addContact();
-                break;
-            default: return;
-        }
+        presenter.onMainMenuOptionSelected(userInput);
     }
 
     public void showContactList(){
-        ContactRepository.getContactRepository().getContactList(new BaseRepository.ContactListLoadedCallback() {
-            public void onContactListLoaded(@NotNull List<Contact> contactList) {
+        presenter.getContactList(new MenuContract.Presenter.OnContactListLoadedListener() {
+            public void onListLoaded(List<Contact> contactList) {
                 for(int index = 0; index < contactList.size(); index++){
                     StringBuilder builder = new StringBuilder();
                     builder.append(index + ": ").append(contactList.get(index));
                     System.out.println(builder.toString());
                 }
+                showContactListOptions();
             }
         });
-        showViewContactListOptions();
     }
 
-    //TODO: Move to presenter
-    private static void addContact(){
+    public void addContact(){
         System.out.println("Enter the Contacts name: ");
-        String contactName = inputScanner.nextLine();
+        String contactName = inputScanner.next();
         System.out.println("Enter the contacts phone number: ");
-        String phoneNumber = inputScanner.nextLine();
+        String phoneNumber = inputScanner.next();
 
-        Contact contact = new Contact();
-        contact.setName(contactName);
-        contact.setPhoneNumber(phoneNumber);
-
-        ContactRepository.getContactRepository().addContact(contact);
+        presenter.addContact(contactName, phoneNumber);
     }
 
-    private static void showViewContactListOptions(){
+    public void showContactListOptions() {
         System.out.println("OPTIONS");
         System.out.println("1. -------SEND MESSAGE-------");
         System.out.println("2. ------DELETE CONTACT------");
         System.out.println("3. --------MAIN MENU---------");
+        System.out.println("Select an option: ");
 
-        int option = inputScanner.nextInt();
-
-        switch (option){
-            case 1:
-
-        }
-    }
-
-    public void showContactListOptions() {
-
+        int userInput = inputScanner.nextInt();
+        presenter.onContactListOptionSelected(userInput);
     }
 }

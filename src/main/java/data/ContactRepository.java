@@ -2,12 +2,11 @@ package data;
 
 import data.models.Contact;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by krishnakandula on 1/20/17.
  */
-public class ContactRepository implements BaseRepository {
+public class ContactRepository implements RepositoryContract {
     private ArrayList<Contact> contactList;
     private static ContactRepository contactRepository;
 

@@ -9,19 +9,21 @@ import java.util.List;
  */
 public interface MenuContract {
     interface View {
+        void onCreate();
         void showMainMenu();
         void showContactList();
         void showContactListOptions();
+        void addContact();
     }
 
     interface Presenter {
         void onMainMenuOptionSelected(int option);
-        void getContactList();
+        void getContactList(OnContactListLoadedListener listener);
         void onContactListOptionSelected(int option);
-        void addContact(int listIndex);
+        void addContact(String name, String phoneNumber);
 
-        interface ContactListListener {
-            void onContactListLoaded(List<Contact> contactList);
+        interface OnContactListLoadedListener {
+            void onListLoaded(List<Contact> contactList);
         }
     }
 }
