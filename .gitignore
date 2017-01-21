@@ -8,3 +8,6 @@ target/
 
 #Config
 Config.java
+
+#Misc.
+*.DS_Store
