@@ -14,16 +14,20 @@ public interface MenuContract {
         void showContactList();
         void showContactListOptions();
         void addContact();
+        void selectContact();
+        void showContactOptions();
+        void showMessageTextView();
+        void displayToast(String toastMessage);
     }
 
     interface Presenter {
+        List<Contact> getContactList();
         void onMainMenuOptionSelected(int option);
-        void getContactList(OnContactListLoadedListener listener);
         void onContactListOptionSelected(int option);
+        void onContactOptionsSelected(int option);
         void addContact(String name, String phoneNumber);
-
-        interface OnContactListLoadedListener {
-            void onListLoaded(List<Contact> contactList);
-        }
+        void sendMessage(String message);
+        void setSelectedContact(int selectedContactIndex);
+        void deleteContact();
     }
 }

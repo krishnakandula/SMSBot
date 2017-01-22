@@ -8,17 +8,17 @@ import java.util.List;
  * Created by krishnakandula on 1/20/17.
  */
 public interface RepositoryContract {
-    void getContact(int listIndex, ContactLoadedCallback callback);
-    void getContactList(ContactListLoadedCallback callback);
+    Contact getContact(int listIndex);
+    List<Contact> getContactList();
 
-    void addContact(Contact contact);
-    boolean deleteContact(int listIndex);
+    void addContact(Contact contact, OnAddContactListener listener);
+    void deleteContact(int listIndex, OnDeleteContactListener listener);
 
-    interface ContactLoadedCallback {
-        void onContactLoaded(@NotNull Contact contact);
+    interface OnAddContactListener {
+        void onAdded();
     }
 
-    interface ContactListLoadedCallback {
-        void onContactListLoaded(@NotNull List<Contact> contactList);
+    interface OnDeleteContactListener {
+        void onDeleted();
     }
 }

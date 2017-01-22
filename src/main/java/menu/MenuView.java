@@ -1,10 +1,7 @@
 package menu;
 
-import com.twilio.Twilio;
-import com.twilio.rest.api.v2010.account.Message;
-import com.twilio.type.PhoneNumber;
-import config.Config;
 import data.models.Contact;
+import service.ServiceContract;
 
 import java.util.List;
 import java.util.Scanner;
@@ -16,33 +13,34 @@ public class MenuView implements MenuContract.View{
     public static Scanner inputScanner;
     private MenuContract.Presenter presenter;
 
+    public MenuView(ServiceContract smsService){
+        presenter = new MenuPresenter(this, smsService);
+    }
+
+    //Start method
     public void onCreate(){
-        presenter = new MenuPresenter(this);
         inputScanner = new Scanner(System.in);
         showMainMenu();
     }
 
     public void showMainMenu(){
-        System.out.println("WELCOME!");
+        System.out.println("MAIN MENU");
         System.out.println("1. -----VIEW CONTACTS-----");
         System.out.println("2. ------ADD CONTACT------");
         System.out.println("3. ---------EXIT----------");
 
         int userInput = inputScanner.nextInt();
+        inputScanner.nextLine();
         presenter.onMainMenuOptionSelected(userInput);
     }
 
     public void showContactList(){
-        presenter.getContactList(new MenuContract.Presenter.OnContactListLoadedListener() {
-            public void onListLoaded(List<Contact> contactList) {
-                for(int index = 0; index < contactList.size(); index++){
-                    StringBuilder builder = new StringBuilder();
-                    builder.append(index + ": ").append(contactList.get(index));
-                    System.out.println(builder.toString());
-                }
-                showContactListOptions();
-            }
-        });
+        List<Contact> contactList = presenter.getContactList();
+        for(int index = 0; index < contactList.size(); index++){
+            StringBuilder builder = new StringBuilder();
+            builder.append(index + ": ").append(contactList.get(index));
+            System.out.println(builder.toString());
+        }
     }
 
     public void addContact(){
@@ -56,12 +54,42 @@ public class MenuView implements MenuContract.View{
 
     public void showContactListOptions() {
         System.out.println("OPTIONS");
+        System.out.println("1. ------SELECT CONTACT------");
+        System.out.println("2. --------MAIN MENU---------");
+        System.out.println("Select an option: ");
+
+        int userInput = inputScanner.nextInt();
+        inputScanner.nextLine();
+        presenter.onContactListOptionSelected(userInput);
+    }
+
+    public void selectContact(){
+        System.out.println("Enter the index for the contact you want to select: ");
+        int userInput = inputScanner.nextInt();
+        inputScanner.nextLine();
+        presenter.setSelectedContact(userInput);
+    }
+
+    public void showContactOptions() {
+        System.out.println("CONTACT OPTIONS");
         System.out.println("1. -------SEND MESSAGE-------");
         System.out.println("2. ------DELETE CONTACT------");
         System.out.println("3. --------MAIN MENU---------");
         System.out.println("Select an option: ");
 
         int userInput = inputScanner.nextInt();
-        presenter.onContactListOptionSelected(userInput);
+        inputScanner.nextLine();
+        presenter.onContactOptionsSelected(userInput);
+    }
+
+    public void showMessageTextView() {
+        System.out.println("ENTER MESSAGE: ");
+        String userInput = inputScanner.nextLine();
+
+        presenter.sendMessage(userInput);
+    }
+
+    public void displayToast(String toastMessage) {
+        System.out.println(toastMessage);
     }
 }
