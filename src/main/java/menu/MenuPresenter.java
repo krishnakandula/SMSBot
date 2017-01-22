@@ -62,7 +62,7 @@ public class MenuPresenter implements MenuContract.Presenter{
 
     public void sendMessage(String message) {
         Contact contact = ContactRepository.getContactRepository().getContact(selectedContactIndex);
-        smsService.sendMessage(Config.TWILIO_FROM_PHONE_NUMBER, Config.SHANE_PHONE_NUMBER, message);
+        smsService.sendMessage(Config.TWILIO_FROM_PHONE_NUMBER, Config.MY_PHONE_NUMBER, message);
         view.showContactOptions();
     }
 
