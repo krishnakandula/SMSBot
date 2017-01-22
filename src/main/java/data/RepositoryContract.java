@@ -1,6 +1,5 @@
 package data;
 
-import com.sun.istack.internal.NotNull;
 import data.models.Contact;
 import java.util.List;
 

@@ -41,8 +41,13 @@ public class MenuPresenter implements MenuContract.Presenter{
 
     public void setSelectedContact(int selectedContactIndex) {
         List<Contact> contactList = ContactRepository.getContactRepository().getContactList();
-        this.selectedContactIndex = selectedContactIndex;
-        view.showContactOptions();
+        if(selectedContactIndex < 0 || selectedContactIndex >= contactList.size()){
+            view.displayToast("Please select a valid contact.");
+            view.showContactListOptions();
+        } else {
+            this.selectedContactIndex = selectedContactIndex;
+            view.showContactOptions();
+        }
     }
 
     public void deleteContact() {

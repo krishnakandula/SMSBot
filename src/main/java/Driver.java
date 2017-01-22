@@ -1,5 +1,3 @@
-import com.twilio.Twilio;
-import config.Config;
 import menu.MenuContract;
 import menu.MenuView;
 import service.TwilioService;
